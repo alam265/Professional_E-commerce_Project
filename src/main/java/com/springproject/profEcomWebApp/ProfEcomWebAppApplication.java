@@ -8,8 +8,8 @@ public class ProfEcomWebAppApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ProfEcomWebAppApplication.class, args);
-        System.out.println("Server is Running!!!!");
-        System.out.println("Welcome !!");
+        System.out.println("Server is Running!!!");
+
 	}
 
 }
