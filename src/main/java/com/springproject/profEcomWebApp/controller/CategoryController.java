@@ -3,6 +3,7 @@ package com.springproject.profEcomWebApp.controller;
 
 import com.springproject.profEcomWebApp.model.Category;
 import com.springproject.profEcomWebApp.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class CategoryController {
     }
 
     @PostMapping("/public/categories")
-    public String createCategories(@RequestBody Category category){
+    public String createCategories( @Valid @RequestBody Category category){
         categoryService.createCategory(category);
         return "Successfully created";
     }
