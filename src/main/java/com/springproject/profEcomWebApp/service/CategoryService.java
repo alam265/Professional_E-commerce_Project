@@ -8,6 +8,9 @@ import com.springproject.profEcomWebApp.payload.CategoryResponse;
 import com.springproject.profEcomWebApp.repository.CategoryRepo;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,8 +25,11 @@ public class CategoryService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public CategoryResponse findAllCategory(){
-        List<Category> categories = categoryRepo.findAll();
+    public CategoryResponse findAllCategory(Integer pageNumber, Integer pageSize){
+
+        Pageable pageDetails = PageRequest.of(pageNumber, pageSize);
+        Page<Category> categoryPage = categoryRepo.findAll(pageDetails);
+        List<Category> categories = categoryPage.getContent();
         if(categories.isEmpty()){
             throw new APIExceptionHandler("Categoy Empty");
         }
@@ -32,6 +38,12 @@ public class CategoryService {
                 .toList();
         CategoryResponse categoryResponse = new CategoryResponse();
         categoryResponse.setContent(categoryDTOS);
+        categoryResponse.setPageNumber(categoryPage.getNumber());
+        categoryResponse.setPageSize(categoryPage.getSize());
+        categoryResponse.setTotalPages(categoryPage.getTotalPages());
+        categoryResponse.setTotalElements(categoryPage.getTotalElements());
+        categoryResponse.setLastPage(categoryPage.isLast());
+
         return categoryResponse;
 
     }

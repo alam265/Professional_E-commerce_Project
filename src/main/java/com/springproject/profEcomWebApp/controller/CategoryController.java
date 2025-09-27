@@ -1,7 +1,7 @@
 package com.springproject.profEcomWebApp.controller;
 
 
-import com.springproject.profEcomWebApp.model.Category;
+import com.springproject.profEcomWebApp.config.AppConstants;
 import com.springproject.profEcomWebApp.payload.CategoryDTO;
 import com.springproject.profEcomWebApp.payload.CategoryResponse;
 import com.springproject.profEcomWebApp.service.CategoryService;
@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -23,8 +21,9 @@ public class CategoryController {
 
 
     @GetMapping("/public/categories")
-    public ResponseEntity<CategoryResponse> getAllCategories(){
-        CategoryResponse categoryResponse = categoryService.findAllCategory();
+    public ResponseEntity<CategoryResponse> getAllCategories(@RequestParam(name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER) Integer pageNumber,
+                                                             @RequestParam(name = "pageSize", defaultValue = AppConstants.PAGE_SIZE) Integer pageSize){
+        CategoryResponse categoryResponse = categoryService.findAllCategory(pageNumber, pageSize);
         return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
     }
 
