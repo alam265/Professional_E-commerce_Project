@@ -1,5 +1,6 @@
 package com.springproject.profEcomWebApp.exception;
 
+import com.springproject.profEcomWebApp.payload.APIResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -26,15 +27,17 @@ public class MyGlobalExceptionHandler {
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<String> resourceNotFoundException(ResourceNotFoundException e){
+    public ResponseEntity<APIResponse> resourceNotFoundException(ResourceNotFoundException e){
         String message = e.getMessage();
-        return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
+        APIResponse apiResponse = new APIResponse(message, false);
+        return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
 
     }
     @ExceptionHandler(APIExceptionHandler.class)
-    public ResponseEntity<String> myAPIException(APIExceptionHandler e){
+    public ResponseEntity<APIResponse> myAPIException(APIExceptionHandler e){
         String message = e.getMessage();
-        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+        APIResponse apiResponse = new APIResponse(message, false);
+        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
 
     }
 }
