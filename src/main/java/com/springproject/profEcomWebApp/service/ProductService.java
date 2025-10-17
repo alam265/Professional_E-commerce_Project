@@ -67,4 +67,23 @@ public class ProductService {
         productResponse.setContent(productDTOS);
         return productResponse;
     }
+
+    public ProductDTO updateProduct(Product product, Long productId) {
+        Product existingProduct = productRepository.findById(productId).orElseThrow(()-> new ResourceNotFoundException("Product","productId", productId));
+        existingProduct.setProductName(product.getProductName());
+        existingProduct.setCategory(product.getCategory());
+        existingProduct.setPrice(product.getPrice());
+        existingProduct.setDiscount(product.getDiscount());
+        double specialPrice = product.getPrice() - ((product.getDiscount()*0.01)*product.getPrice());
+        existingProduct.setSpecialPrice(specialPrice);
+        Product savedProduct = productRepository.save(existingProduct);
+        return modelMapper.map(savedProduct, ProductDTO.class);
+    }
+
+    public ProductDTO deleteProduct(Long productId) {
+        Product existingProduct = productRepository.findById(productId).orElseThrow(()-> new ResourceNotFoundException("Product","productId", productId));
+        productRepository.deleteById(productId);
+        return modelMapper.map(existingProduct, ProductDTO.class);
+
+    }
 }
