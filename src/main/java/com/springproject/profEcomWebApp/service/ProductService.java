@@ -7,13 +7,17 @@ import com.springproject.profEcomWebApp.payload.ProductDTO;
 import com.springproject.profEcomWebApp.payload.ProductResponse;
 import com.springproject.profEcomWebApp.repository.CategoryRepo;
 import com.springproject.profEcomWebApp.repository.ProductRepository;
-import jdk.dynalink.linker.LinkerServices;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ProductService {
@@ -26,10 +30,11 @@ public class ProductService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public ProductDTO addProduct(Product product, Long categoryId) {
+    public ProductDTO addProduct(ProductDTO productDTO, Long categoryId) {
         Category category = categoryRepo.findById(categoryId)
                 .orElseThrow(()-> new ResourceNotFoundException("Category", "categoryId", categoryId));
 
+        Product product = modelMapper.map(productDTO, Product.class);
         product.setCategory(category);
         product.setImage("default.png");
         double specialPrice = product.getPrice() - ((product.getDiscount()*0.01)*product.getPrice());
@@ -68,8 +73,9 @@ public class ProductService {
         return productResponse;
     }
 
-    public ProductDTO updateProduct(Product product, Long productId) {
+    public ProductDTO updateProduct(ProductDTO productDTO, Long productId) {
         Product existingProduct = productRepository.findById(productId).orElseThrow(()-> new ResourceNotFoundException("Product","productId", productId));
+        Product product = modelMapper.map(productDTO, Product.class);
         existingProduct.setProductName(product.getProductName());
         existingProduct.setCategory(product.getCategory());
         existingProduct.setPrice(product.getPrice());
@@ -84,6 +90,41 @@ public class ProductService {
         Product existingProduct = productRepository.findById(productId).orElseThrow(()-> new ResourceNotFoundException("Product","productId", productId));
         productRepository.deleteById(productId);
         return modelMapper.map(existingProduct, ProductDTO.class);
+
+    }
+
+    public ProductDTO updatetheImage(Long productId, MultipartFile image) {
+        Product existingProduct = productRepository.findById(productId).orElseThrow(()-> new ResourceNotFoundException("Product", "productId", productId));
+
+        String path = "images/";
+        String fileName = null;
+        try {
+            fileName = uploadImage(path, image);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        existingProduct.setImage(fileName);
+        Product savedProduct = productRepository.save(existingProduct);
+        return modelMapper.map(savedProduct, ProductDTO.class);
+
+
+    }
+
+    private String uploadImage(String path, MultipartFile image) throws IOException {
+        String originalFileName = image.getOriginalFilename();
+        String randomId = UUID.randomUUID().toString();
+        String fileName = randomId.concat(originalFileName.substring(originalFileName.lastIndexOf('.')));
+        String filePath = path + File.separator + fileName;
+
+        // cheking folder exist else create
+        File folder = new File(path);
+        if(!folder.exists()){
+            folder.mkdir();
+        }
+        Files.copy(image.getInputStream(), Paths.get(filePath));
+
+        return fileName;
 
     }
 }
