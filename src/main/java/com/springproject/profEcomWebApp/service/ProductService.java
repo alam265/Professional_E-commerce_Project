@@ -9,6 +9,7 @@ import com.springproject.profEcomWebApp.repository.CategoryRepo;
 import com.springproject.profEcomWebApp.repository.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +30,12 @@ public class ProductService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private FileService fileService;
+
+    @Value("${project.image}")
+    private String path;
 
     public ProductDTO addProduct(ProductDTO productDTO, Long categoryId) {
         Category category = categoryRepo.findById(categoryId)
@@ -96,10 +103,10 @@ public class ProductService {
     public ProductDTO updatetheImage(Long productId, MultipartFile image) {
         Product existingProduct = productRepository.findById(productId).orElseThrow(()-> new ResourceNotFoundException("Product", "productId", productId));
 
-        String path = "images/";
+
         String fileName = null;
         try {
-            fileName = uploadImage(path, image);
+            fileName = fileService.uploadImage(path, image);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -111,20 +118,5 @@ public class ProductService {
 
     }
 
-    private String uploadImage(String path, MultipartFile image) throws IOException {
-        String originalFileName = image.getOriginalFilename();
-        String randomId = UUID.randomUUID().toString();
-        String fileName = randomId.concat(originalFileName.substring(originalFileName.lastIndexOf('.')));
-        String filePath = path + File.separator + fileName;
 
-        // cheking folder exist else create
-        File folder = new File(path);
-        if(!folder.exists()){
-            folder.mkdir();
-        }
-        Files.copy(image.getInputStream(), Paths.get(filePath));
-
-        return fileName;
-
-    }
 }
