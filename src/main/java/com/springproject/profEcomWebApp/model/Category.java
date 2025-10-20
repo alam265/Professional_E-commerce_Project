@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 
 @Entity
 @Table(name = "categories")
@@ -22,5 +24,8 @@ public class Category {
     @NotBlank
     @Size(min=4, message = "Category size must be greater or equal to 4 words")
     private String categoryName;
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    private List<Product> products;
 
 }
