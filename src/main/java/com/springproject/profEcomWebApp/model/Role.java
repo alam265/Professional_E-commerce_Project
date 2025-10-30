@@ -1,12 +1,14 @@
 package com.springproject.profEcomWebApp.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "roles")
 public class Role {
     @Id
@@ -16,9 +18,9 @@ public class Role {
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20, name = "role_name")
-     private AppRole appRole;
+     private AppRole roleName;
 
     public Role(AppRole appRole) {
-        this.appRole = appRole;
+        this.roleName = appRole;
     }
 }
