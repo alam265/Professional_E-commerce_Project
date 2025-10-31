@@ -70,6 +70,6 @@ public class WebSecurityConfig {
 
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authJWTTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-        return null;
+        return http.build();
     }
 }
