@@ -2,15 +2,21 @@ package com.springproject.profEcomWebApp.security.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.springproject.profEcomWebApp.model.User;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+
 import java.io.Serial;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Data
+@NoArgsConstructor
 public class UserDetailsImpl implements UserDetails {
     @Serial
     private static final long serialVersionUID=1L;
@@ -68,5 +74,17 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj){
+            return true;
+        }
+        if( obj ==null || getClass() != obj.getClass()) {
+            return false;
+        }
+        UserDetailsImpl user = (UserDetailsImpl) obj;
+        return Objects.equals(id, user.id);
     }
 }
