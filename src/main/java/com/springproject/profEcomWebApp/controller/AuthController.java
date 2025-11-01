@@ -3,6 +3,7 @@ package com.springproject.profEcomWebApp.controller;
 import com.springproject.profEcomWebApp.model.AppRole;
 import com.springproject.profEcomWebApp.model.Role;
 import com.springproject.profEcomWebApp.model.User;
+import com.springproject.profEcomWebApp.repository.RoleRepository;
 import com.springproject.profEcomWebApp.repository.UserRepository;
 import com.springproject.profEcomWebApp.security.jwt.JwtUtils;
 import com.springproject.profEcomWebApp.security.request.LoginRequest;
@@ -20,14 +21,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Component
+@RestController
+@RequestMapping("/api/auth")
 public class AuthController {
 
     @Autowired
@@ -80,7 +83,7 @@ public class AuthController {
        if( userRepository.existsByUserName(signupRequest.getUsername())){
            return ResponseEntity.badRequest().body(new MessageResponse("Error: username is already taken"));
        }
-        if( userRepository.existsByEmail(signupRequest.getEmail())){
+        if( userRepository.existsByUserEmail(signupRequest.getEmail())){
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already taken"));
         }
         User user = new User(signupRequest.getUsername(), signupRequest.getEmail(),passwordEncoder.encode(signupRequest.getPassword()));
