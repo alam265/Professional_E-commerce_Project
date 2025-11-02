@@ -14,8 +14,8 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "userName"),
-        @UniqueConstraint(columnNames = "userEmail")
+        @UniqueConstraint(columnNames = "username"),
+        @UniqueConstraint(columnNames = "email")
 })
 public class User {
     @Id
@@ -25,22 +25,22 @@ public class User {
 
     @NotBlank
     @Length(min = 3, max = 20)
-    @Column(name = "userName")
+    @Column(name = "username")
     private String userName;
 
     @NotBlank
     @Email
-    @Column(name = "userEmail")
-    private String userEmail;
+    @Column(name = "email")
+    private String email;
 
     @NotBlank
-    @Column(name = "userPassword")
-    private String userPassword;
+    @Column(name = "password")
+    private String password;
 
     public User(String userName, String userEmail, String userPassword) {
         this.userName = userName;
-        this.userEmail = userEmail;
-        this.userPassword = userPassword;
+        this.email = userEmail;
+        this.password = userPassword;
     }
     @Getter
     @Setter

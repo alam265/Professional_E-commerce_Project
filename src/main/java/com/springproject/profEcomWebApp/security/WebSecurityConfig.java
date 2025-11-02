@@ -70,7 +70,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorizeRequests->
                 authorizeRequests.requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/public/**").permitAll()
+                        //.requestMatchers("/api/public/**").permitAll()
                         .requestMatchers("/api/admin/**").permitAll()
                         .requestMatchers("/images/**").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
