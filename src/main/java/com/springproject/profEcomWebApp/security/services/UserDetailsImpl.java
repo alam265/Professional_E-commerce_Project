@@ -23,14 +23,14 @@ public class UserDetailsImpl implements UserDetails {
     @Serial
     private static final long serialVersionUID=1L;
 
-    private  Integer id;
+    private  Long id;
     private String username;
     @JsonIgnore
     private String password;
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Integer id, String username, String password, Collection<? extends GrantedAuthority> authorities) {
+    public UserDetailsImpl(Long id, String username, String password, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.password = password;

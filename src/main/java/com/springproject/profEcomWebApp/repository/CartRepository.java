@@ -9,4 +9,7 @@ import org.springframework.stereotype.Repository;
 public interface CartRepository extends JpaRepository<Cart, Long> {
         @Query("SELECT c FROM Cart c where c.user.email = ?1")
         Cart findCartByEmail(String email);
+
+        @Query("SELECT c FROM Cart c where c.user.email = ?1 and c.id = ?2")
+        Cart getCartByEmailAndId(String email, Long cartId);
 }

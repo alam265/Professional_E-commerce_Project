@@ -10,6 +10,7 @@ import com.springproject.profEcomWebApp.payload.ProductDTO;
 import com.springproject.profEcomWebApp.repository.CartItemRepository;
 import com.springproject.profEcomWebApp.repository.CartRepository;
 import com.springproject.profEcomWebApp.repository.ProductRepository;
+import com.springproject.profEcomWebApp.util.AuthUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -93,7 +94,39 @@ public class CartService {
         cart.setTotalPrice(0.00);
         cart.setUser(authUtil.loggedInUser());
         Cart newCart =  cartRepository.save(cart);
-
         return newCart;
+    }
+
+    public List<CartDTO> getAllCarts() {
+        List<Cart> carts = cartRepository.findAll();
+        if (carts.isEmpty()){
+            throw new APIExceptionHandler("No cart exists");
+        }
+        List<CartDTO> cartDTOs = carts.stream().map(cart -> {
+            CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
+
+            List<ProductDTO> productDTOs = cart.getCartItems().stream()
+                    .map(item -> modelMapper.map(item.getProduct(), ProductDTO.class)).toList();
+            cartDTO.setProducts(productDTOs);
+            return cartDTO;
+
+        }).toList();
+
+        return cartDTOs;
+
+    }
+
+    public CartDTO getCartByEmailAndId(String email, Long cartId) {
+        Cart cart = cartRepository.getCartByEmailAndId(email, cartId);
+        if (cart==null) {
+            throw new ResourceNotFoundException("Cart", "cartId", cartId);
+        }
+        CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
+        cart.getCartItems().forEach(item -> item.getProduct().setQuantity(item.getQuantity()));
+        List<ProductDTO> productDTOs = cart.getCartItems().stream()
+                .map(item -> modelMapper.map(item.getProduct(), ProductDTO.class)).toList();
+        cartDTO.setProducts(productDTOs);
+
+        return  cartDTO;
     }
 }
