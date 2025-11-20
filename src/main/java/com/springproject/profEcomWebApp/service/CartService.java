@@ -152,14 +152,24 @@ public class CartService {
 
         CartItem cartItem = cartItemRepository.findCartItemByProductIdAndCartId(cartId, productId);
         if (cartItem == null) {
-            throw new APIExceptionHandler("Product " + product.getProductName() + " Not in the cart");
+            throw new APIExceptionHandler("Product " + product.getProductName() + " not available in the cart!!!");
+        }
+        int newQuantity = cartItem.getQuantity() + quantity;
+
+        // Validation to prevent negative quantities
+        if (newQuantity < 0) {
+            throw new APIExceptionHandler("The resulting quantity cannot be negative.");
         }
 
-        cartItem.setProductPrice(product.getSpecialPrice());
-        cartItem.setQuantity(cartItem.getQuantity() + quantity);
-        cartItem.setDiscount(product.getDiscount());
-        cart.setTotalPrice(cart.getTotalPrice() + (cartItem.getProductPrice()*quantity));
-        cartRepository.save(cart);
+        if (newQuantity == 0){
+            deleteProductFromCart(cartId, productId);
+        } else {
+            cartItem.setProductPrice(product.getSpecialPrice());
+            cartItem.setQuantity(cartItem.getQuantity() + quantity);
+            cartItem.setDiscount(product.getDiscount());
+            cart.setTotalPrice(cart.getTotalPrice() + (cartItem.getProductPrice() * quantity));
+            cartRepository.save(cart);
+        }
         CartItem updatedCartItem = cartItemRepository.save(cartItem);
         if (updatedCartItem.getQuantity() == 0) {
             cartItemRepository.deleteById(updatedCartItem.getCartItemId());
@@ -184,6 +194,7 @@ public class CartService {
 
     }
 
+    @Transactional
     public String deleteProductFromCart(Long cartId, Long productId) {
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart", "cartId", cartId));
