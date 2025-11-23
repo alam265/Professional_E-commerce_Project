@@ -40,16 +40,17 @@ public class Address {
     @Size(min = 4, message = "country must be atleast 4 characters")
     private String country;
 
-    @ToString.Exclude
-    @ManyToMany(mappedBy = "addresses")
-    private List<User> users = new ArrayList<>();
 
-    public Address(String street, String buildingName, String state, String pincode, String country, List<User> users) {
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public Address(String street, String buildingName, String state, String pincode, String country, User user) {
         this.street = street;
         this.buildingName = buildingName;
         this.state = state;
         this.pincode = pincode;
         this.country = country;
-        this.users = users;
+        this.user = user;
     }
 }
