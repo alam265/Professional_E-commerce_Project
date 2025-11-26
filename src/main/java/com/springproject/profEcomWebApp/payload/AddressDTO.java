@@ -14,6 +14,7 @@ public class AddressDTO {
     private String buildingName;
     private String state;
     private String pincode;
+    private String city;
     private String country;
 
 }

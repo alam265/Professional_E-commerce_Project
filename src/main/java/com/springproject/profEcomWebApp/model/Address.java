@@ -36,6 +36,8 @@ public class Address {
     @Size(min = 4, message = "pincode must be atleast 4 characters")
     private String pincode;
 
+    private String city;
+
     @NotBlank
     @Size(min = 4, message = "country must be atleast 4 characters")
     private String country;
