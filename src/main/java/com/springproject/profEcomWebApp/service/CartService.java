@@ -107,7 +107,11 @@ public class CartService {
             CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
 
             List<ProductDTO> productDTOs = cart.getCartItems().stream()
-                    .map(item -> modelMapper.map(item.getProduct(), ProductDTO.class)).toList();
+                    .map(item ->{
+                        ProductDTO productDTO = modelMapper.map(item.getProduct(), ProductDTO.class);
+                        productDTO.setQuantity(item.getQuantity()); // Set the quantity from CartItem
+                        return productDTO;
+                    } ).toList();
             cartDTO.setProducts(productDTOs);
             return cartDTO;
 
