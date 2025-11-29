@@ -4,6 +4,7 @@ import com.springproject.profEcomWebApp.config.AppConstants;
 import com.springproject.profEcomWebApp.payload.ProductDTO;
 import com.springproject.profEcomWebApp.payload.ProductResponse;
 import com.springproject.profEcomWebApp.service.ProductService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,7 +25,6 @@ public class ProductController {
         return new ResponseEntity<>(savedproductDTO, HttpStatus.CREATED);
 
     }
-
     @GetMapping("/public/products")
     public ResponseEntity<ProductResponse> getAllProducts(
             @RequestParam(name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER, required = false)  Integer pageNumber ,
