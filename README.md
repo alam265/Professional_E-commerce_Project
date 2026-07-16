@@ -226,30 +226,26 @@ The schema is generated/updated automatically via `spring.jpa.hibernate.ddl-auto
 
 ## Configuration
 
-All configuration lives in `src/main/resources/application.properties`:
+All configuration lives in `src/main/resources/application.properties`. The key
+properties (do **not** commit real secrets — use environment variables or a
+secrets manager in production):
 
-```properties
-spring.application.name=profEcomWebApp
+| Property | Purpose |
+|----------|---------|
+| `spring.application.name` | Application name (`profEcomWebApp`) |
+| `spring.datasource.url` | JDBC URL for the PostgreSQL database |
+| `spring.datasource.username` | Database username |
+| `spring.datasource.password` | Database password |
+| `spring.jpa.hibernate.ddl-auto` | Schema management mode (e.g. `update`) |
+| `spring.jpa.database-platform` | Hibernate dialect (PostgreSQL) |
+| `project.image` | Directory for uploaded product images |
+| `spring.app.jwtSecret` | Secret key used to sign/verify JWTs |
+| `spring.app.jwtExpirationMs` | JWT expiration time in milliseconds |
+| `spring.app.jwtCookieName` | Name of the JWT cookie |
 
-# PostgreSQL datasource
-spring.datasource.url=jdbc:postgresql://localhost:5432/ecommerce
-spring.datasource.username=postgres
-spring.datasource.password=1111
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
-
-# Product image upload directory (relative to project root)
-project.image=images/
-
-# JWT settings
-spring.app.jwtSecret=mySecretKey123912738aopsgjnspkmndfsopkvajoirjg94gf2opfng2moknm
-spring.app.jwtExpirationMs=3000000
-spring.app.jwtCookieName=SpringBootEcom
-```
-
-> ⚠️ **Security note:** The datasource password and JWT secret are hardcoded in
-> `application.properties`. Before deploying to production, move them to
-> environment variables or a secrets manager and use a strong, unique JWT secret.
+> ⚠️ **Security note:** The datasource password and JWT secret must NOT be
+> hardcoded in `application.properties` for production. Move them to environment
+> variables or a secrets manager and use a strong, unique JWT secret.
 
 ### Seeded Data (CommandLineRunner)
 
